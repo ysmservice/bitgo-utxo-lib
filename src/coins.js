@@ -11,7 +11,7 @@ const coins = {
   VERUSTEST: 'verustest',
   DASH: 'dash',
   DEFAULT: 'default',
-  KMD: 'komodo'
+  KMD: 'kmd'
 }
 
 coins.isBitcoin = function (network) {
