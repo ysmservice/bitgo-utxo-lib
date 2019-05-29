@@ -11,7 +11,9 @@ const coins = {
   VERUSTEST: 'verustest',
   DASH: 'dash',
   DEFAULT: 'default',
-  KMD: 'kmd'
+  KMD: 'kmd',
+  DOGE: 'doge',
+  DGB: 'dgb'
 }
 
 coins.isBitcoin = function (network) {
@@ -42,13 +44,23 @@ coins.isKomodo = function (network) {
   return typeforce.value(coins.KMD)(network.coin)
 }
 
+coins.isDoge = function (network) {
+  return typeforce.value(coins.DOGE)(network.coin)
+}
+
+coins.isDigibyte = function (network) {
+  return typeforce.value(coins.DGB)(network.coin)
+}
+
 coins.isValidCoin = typeforce.oneOf(
   coins.isBitcoin,
   coins.isBitcoinCash,
   coins.isBitcoinGold,
   coins.isLitecoin,
   coins.isZcash,
-  coins.isKomodo
+  coins.isKomodo,
+  coins.isDoge,
+  coins.isDigibyte
 )
 
 module.exports = coins
