@@ -195,4 +195,30 @@ module.exports = {
     coin: coins.KMD,
     isZcash: true
   },
+  doge: {
+    messagePrefix: '\x19Dogecoin Signed Message:\n',
+    bip44: 3,
+    bip32: {
+      public: 0x02facafd,
+      private: 0x02fac398
+    },
+    pubKeyHash: 0x1e,
+    scriptHash: 0x16,
+    wif: 0x9e,
+    coin: coins.DOGE,
+    dustThreshold: 0 // https://github.com/dogecoin/dogecoin/blob/v1.7.1/src/core.h#L155-L160
+  },
+  dgb: {
+    messagePrefix: '\x19Digibyte Signed Message:\n',
+    bip44: 20,
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x1e,
+    scriptHash: 0x5,
+    wif: 0x80,
+    coin: coins.DGB,
+    dustThreshold: 1000
+  },
 }

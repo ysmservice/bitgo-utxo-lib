@@ -249,8 +249,6 @@ Transaction.fromBuffer = function (buffer, network = networks.default, __noStric
   var tx = new Transaction(network)
   tx.version = readInt32()
 
-  console.log('NETWORK')
-  console.log(network)
   //console.log('version: ' +  tx.version + ', offset:' + offset)
 
   if (coins.isZcash(network)) {
