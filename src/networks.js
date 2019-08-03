@@ -44,7 +44,7 @@ module.exports = {
     wif: 0xef, // https://github.com/dashpay/godashutil/blob/master/wif.go#L72
     coin: coins.DASH
   },
-  bch: {
+  bitcoincash: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -68,6 +68,31 @@ module.exports = {
     scriptHash: 0xc4,
     wif: 0xef,
     coin: coins.BCH
+  },
+  bitcoinsv: {
+    messagePrefix: '\x18Bitcoin Signed Message:\n',
+    bech32: 'bc',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x00,
+    scriptHash: 0x05,
+    wif: 0x80,
+    coin: coins.BSV,
+    forkId: 0x00
+  },
+  bitcoinsvTestnet: {
+    messagePrefix: '\x18Bitcoin Signed Message:\n',
+    bech32: 'tb',
+    bip32: {
+      public: 0x043587cf,
+      private: 0x04358394
+    },
+    pubKeyHash: 0x6f,
+    scriptHash: 0xc4,
+    wif: 0xef,
+    coin: coins.BSV
   },
   zec: {
     messagePrefix: '\x18ZCash Signed Message:\n',
@@ -128,7 +153,7 @@ module.exports = {
     coin: coins.VRSC,
     isZcash: true
   },
-  btg: {
+  bitcoingold: {
     messagePrefix: '\x18Bitcoin Gold Signed Message:\n',
     bech32: 'btg',
     bip32: {
@@ -141,7 +166,7 @@ module.exports = {
     coin: coins.BTG,
     forkId: 0x4F /* 79 */
   },
-  btc: {
+  bitcoin: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -165,14 +190,27 @@ module.exports = {
     wif: 0xef,
     coin: coins.BTC
   },
-  ltc: {
+  litecoin: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
+    bech32: 'ltc',
     bip32: {
       public: 0x019da462,
       private: 0x019d9cfe
     },
     pubKeyHash: 0x30,
     scriptHash: 0x32,
+    wif: 0xb0,
+    coin: coins.LTC
+  },
+  litecoinTest: {
+    messagePrefix: '\x19Litecoin Signed Message:\n',
+    bech32: 'tltc',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x6f,
+    scriptHash: 0x3a,
     wif: 0xb0,
     coin: coins.LTC
   },
@@ -220,5 +258,5 @@ module.exports = {
     wif: 0x80,
     coin: coins.DGB,
     dustThreshold: 1000
-  },
+  }
 }

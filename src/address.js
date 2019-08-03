@@ -8,7 +8,7 @@ var typeforce = require('typeforce')
 var types = require('./types')
 
 function fromBase58Check (address) {
-  var payload = bs58check.decode(address)
+  var payload = Buffer.from(bs58check.decode(address))
 
   // TODO: 4.0.0, move to "toOutputScript"
   if (payload.length < 21) throw new TypeError(address + ' is too short')
@@ -17,7 +17,7 @@ function fromBase58Check (address) {
   var multibyte = payload.length === 22
   var offset = multibyte ? 2 : 1
 
-  var version = multibyte ? Buffer.from(payload).readUInt16BE(0) : payload[0]  
+  var version = multibyte ? payload.readUInt16BE(0) : payload[0]
   var hash = payload.slice(offset)
 
   return { version: version, hash: hash }
