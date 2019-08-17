@@ -11,7 +11,7 @@ var Transaction = require('./transaction')
 
 function Block (network) {
   typeforce(types.maybe(types.Network), network)
-  network = network || networks.bitcoin
+  network = network || networks.default
   this.version = 1
   this.prevHash = null
   this.merkleRoot = null
@@ -19,7 +19,7 @@ function Block (network) {
   this.bits = 0
   this.nonce = 0
   this.network = network
-  if (network.isZcash) {
+  if (coins.isZcash(network)) {
     this.finalSaplingRoot = null
     this.solutionSize = 0
     this.solution = null
@@ -31,7 +31,7 @@ Block.ZCASH_HEADER_BYTE_SIZE = 1487
 
 Block.fromBuffer = function (buffer, network, skipTransactions) {
   if (buffer.length < 80) throw new Error('Buffer too small (< 80 bytes)')
-  network = network || networks.bitcoin
+  network = network || networks.default
 
   var offset = 0
   function readSlice (n) {
@@ -61,12 +61,12 @@ Block.fromBuffer = function (buffer, network, skipTransactions) {
   block.version = readInt32()
   block.prevHash = readSlice(32)
   block.merkleRoot = readSlice(32)
-  if (network.isZcash) {
+  if (coins.isZcash(network)) {
     block.finalSaplingRoot = readSlice(32)
   }
   block.timestamp = readUInt32()
   block.bits = readUInt32()
-  if (network.isZcash) {
+  if (coins.isZcash(network)) {
     block.nonce = readSlice(32)
     block.solutionSize = readVarInt()
     block.solution = readSlice(1344)
@@ -101,7 +101,7 @@ Block.fromBuffer = function (buffer, network, skipTransactions) {
 }
 
 Block.prototype.byteLength = function (headersOnly) {
-  if (network.isZcash) {
+  if (coins.isZcash(this.network)) {
     if (headersOnly) {
       return Block.ZCASH_HEADER_BYTE_SIZE
     }
@@ -160,12 +160,12 @@ Block.prototype.toBuffer = function (headersOnly) {
   writeInt32(this.version)
   writeSlice(this.prevHash)
   writeSlice(this.merkleRoot)
-  if (this.network.isZcash) {
+  if (coins.isZcash(this.network)) {
     writeSlice(this.finalSaplingRoot)
   }
   writeUInt32(this.timestamp)
   writeUInt32(this.bits)
-  if (this.network.isZcash) {
+  if (coins.isZcash(this.network)) {
     writeSlice(this.nonce)
     varuint.encode(this.solutionSize, buffer, offset)
     offset += varuint.encode.bytes

@@ -6,9 +6,11 @@ var ecdsa = require('../src/ecdsa')
 var ecurve = require('ecurve')
 var proxyquire = require('proxyquire')
 var sinon = require('sinon')
+var randombytes = require('randombytes')
 
 var BigInteger = require('bigi')
 var ECPair = require('../src/ecpair')
+var fastcurve = require('../src/fastcurve')
 
 var fixtures = require('./fixtures/ecpair.json')
 var curve = ecdsa.__curve
@@ -241,8 +243,17 @@ describe('ECPair', function () {
 
     describe('signing', function () {
       it('wraps ecdsa.sign', sinon.test(function () {
+        this.mock(fastcurve).expects('sign')
+          .once().withArgs(hash, keyPair.d).returns(undefined)
         this.mock(ecdsa).expects('sign')
           .once().withArgs(hash, keyPair.d)
+
+        keyPair.sign(hash)
+      }))
+
+      it('wraps fastcurve.sign', sinon.test(function () {
+        this.mock(fastcurve).expects('sign')
+        .once().withArgs(hash, keyPair.d)
 
         keyPair.sign(hash)
       }))
@@ -264,11 +275,61 @@ describe('ECPair', function () {
       })
 
       it('wraps ecdsa.verify', sinon.test(function () {
+        this.mock(fastcurve).expects('verify')
+          .once().withArgs(hash, signature, keyPair.getPublicKeyBuffer()).returns(undefined)
         this.mock(ecdsa).expects('verify')
           .once().withArgs(hash, signature, keyPair.Q)
 
         keyPair.verify(hash, signature)
       }))
+
+      it('wraps fastcurve.verify', sinon.test(function () {
+        this.mock(fastcurve).expects('verify')
+        .once().withArgs(hash, signature, keyPair.getPublicKeyBuffer())
+
+        keyPair.verify(hash, signature)
+      }))
+
+      it('handles falsey return values from fastcurve.verify', sinon.test(function () {
+        this.mock(fastcurve).expects('verify')
+        .once().withArgs(hash, signature, keyPair.getPublicKeyBuffer()).returns(false)
+
+        this.mock(ecdsa).expects('verify').never()
+
+        keyPair.verify(hash, signature)
+      }))
+    })
+  })
+
+  describe('fromPrivateKeyBuffer', function () {
+    it('constructs an ECPair from a random private key buffer', function () {
+      var prvKeyBuffer = randombytes(32)
+      var ecPair = ECPair.fromPrivateKeyBuffer(prvKeyBuffer)
+      var ecPairPrvBuffer = ecPair.getPrivateKeyBuffer()
+      assert.strictEqual(Buffer.compare(ecPairPrvBuffer, prvKeyBuffer), 0)
+    })
+
+    it('throws if the private key is out of range', function () {
+      var prvKeyBuffer = Buffer.alloc(32, 0xff)
+      assert.throws(function () {
+        ECPair.fromPrivateKeyBuffer(prvKeyBuffer)
+      }, new RegExp('private key out of range'))
+    })
+
+    it('throws if the private key buffer is not a buffer', function () {
+      assert.throws(function () {
+        ECPair.fromPrivateKeyBuffer('not a buffer')
+      }, new RegExp('invalid private key buffer'))
+    })
+
+    it('throws if the private key buffer is not 32 bytes', function () {
+      assert.throws(function () {
+        ECPair.fromPrivateKeyBuffer(Buffer.alloc(31, 0x00))
+      }, new RegExp('invalid private key buffer'))
+
+      assert.throws(function () {
+        ECPair.fromPrivateKeyBuffer(Buffer.alloc(33, 0x00))
+      }, new RegExp('invalid private key buffer'))
     })
   })
 })

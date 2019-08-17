@@ -10,7 +10,10 @@ var NETWORKS = require('./networks')
 var BigInteger = require('bigi')
 
 var ecurve = require('ecurve')
+var curve = ecurve.getCurveByName('secp256k1')
 var secp256k1 = ecdsa.__curve
+
+var fastcurve = require('./fastcurve')
 
 function ECPair (d, Q, options) {
   if (options) {
@@ -55,6 +58,31 @@ ECPair.fromPublicKeyBuffer = function (buffer, network) {
     compressed: Q.compressed,
     network: network
   })
+}
+
+/**
+ * Create an ECPair from the raw private key bytes
+ * @param buffer {Buffer} Private key for the ECPair. Must be exactly 32 bytes.
+ * @param network {Object} Network for the ECPair. Defaults to bitcoin.
+ * @return {ECPair}
+ */
+ECPair.fromPrivateKeyBuffer = function (buffer, network) {
+  if (!Buffer.isBuffer(buffer) || buffer.length !== 32) {
+    throw new Error('invalid private key buffer')
+  }
+
+  var d = BigInteger.fromBuffer(buffer)
+
+  if (d.signum() <= 0 || d.compareTo(curve.n) >= 0) {
+    throw new Error('private key out of range')
+  }
+
+  var ecPair = new ECPair(d, null, { network: network })
+  if (!ecPair.__Q && curve) {
+    ecPair.__Q = ecurve.Point.decodeFrom(curve, fastcurve.publicKeyCreate(d.toBuffer(32), false))
+  }
+
+  return ecPair
 }
 
 ECPair.fromWIF = function (string, network) {
@@ -134,6 +162,8 @@ ECPair.prototype.getPrivateKeyBuffer = function () {
 ECPair.prototype.sign = function (hash) {
   if (!this.d) throw new Error('Missing private key')
 
+  var sig = fastcurve.sign(hash, this.d)
+  if (sig !== undefined) return sig
   return ecdsa.sign(hash, this.d)
 }
 
@@ -144,6 +174,8 @@ ECPair.prototype.toWIF = function () {
 }
 
 ECPair.prototype.verify = function (hash, signature) {
+  var fastsig = fastcurve.verify(hash, signature, this.getPublicKeyBuffer())
+  if (fastsig !== undefined) return fastsig
   return ecdsa.verify(hash, signature, this.Q)
 }
 

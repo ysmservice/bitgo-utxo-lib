@@ -1,6 +1,6 @@
 {
   "name": "bitgo-utxo-lib",
-  "version": "1.2.1",
+  "version": "1.5.0",
   "description": "Client-side Bitcoin JavaScript library",
   "main": "./src/index.js",
   "engines": {
@@ -63,5 +63,8 @@
     "sinon": "^1.12.2",
     "standard": "^9.0.2"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "optionalDependencies": {
+    "secp256k1": "^3.5.2"
+  }
 }
