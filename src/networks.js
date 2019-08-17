@@ -94,7 +94,7 @@ module.exports = {
     wif: 0xef,
     coin: coins.BSV
   },
-  zec: {
+  zcash: {
     messagePrefix: '\x18ZCash Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -134,7 +134,7 @@ module.exports = {
     coin: coins.ZEC,
     isZcash: true
   },
-  vrsc: {
+  veruscoin: {
     messagePrefix: '\x18Verus Coin Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -214,7 +214,7 @@ module.exports = {
     wif: 0xb0,
     coin: coins.LTC
   },
-  kmd: {
+  komodo: {
     messagePrefix: '\x18Komodo Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -246,7 +246,7 @@ module.exports = {
     coin: coins.DOGE,
     dustThreshold: 0 // https://github.com/dogecoin/dogecoin/blob/v1.7.1/src/core.h#L155-L160
   },
-  dgb: {
+  digibyte: {
     messagePrefix: '\x19Digibyte Signed Message:\n',
     bip44: 20,
     bip32: {
