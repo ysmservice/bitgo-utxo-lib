@@ -4,7 +4,7 @@ var coins = require('./coins')
 
 module.exports = {
   default: {
-    messagePrefix: '\x18Default Signed Message:\n',
+    messagePrefix: '\x15Verus signed data:\n',
     bech32: 'bc',
     bip32: {
       public: 0x0488b21e,
@@ -135,7 +135,7 @@ module.exports = {
     isZcash: true
   },
   veruscoin: {
-    messagePrefix: '\x18Verus Coin Signed Message:\n',
+    messagePrefix: '\x15Verus signed data:\n',
     bech32: 'bc',
     bip32: {
       public: 0x0488b21e,
