@@ -197,6 +197,7 @@ function fixMultisigOrder (input, transaction, vin, value, network) {
       var parsed = ECSignature.parseScriptSignature(signature)
       var hash
       switch (network.coin) {
+        case coins.BSV:
         case coins.BCH:
           hash = transaction.hashForCashSignature(vin, input.signScript, value, parsed.hashType)
           break
@@ -609,7 +610,7 @@ TransactionBuilder.fromTransaction = function (transaction, network) {
   txb.setLockTime(transaction.locktime)
 
   if (coins.isZcash(txbNetwork)) {
-    // Copy Zcash overwinter fields. If the transaction builder is not for Zcash, they will be omitted
+    // Copy Zcash overwinter fields. Omitted if the transaction builder is not for Zcash.
     if (txb.tx.isOverwinterCompatible()) {
       txb.setVersionGroupId(transaction.versionGroupId)
       txb.setExpiryHeight(transaction.expiryHeight)
@@ -620,6 +621,18 @@ TransactionBuilder.fromTransaction = function (transaction, network) {
       txb.setJoinSplits(transaction)
     }
   }
+
+  // Copy Dash special transaction fields. Omitted if the transaction builder is not for Dash.
+  if (coins.isDash(txbNetwork)) {
+    typeforce(types.UInt16, transaction.type)
+    txb.tx.type = transaction.type
+
+    if (txb.tx.versionSupportsDashSpecialTransactions()) {
+      typeforce(types.Buffer, transaction.extraPayload)
+      txb.tx.extraPayload = transaction.extraPayload
+    }
+  }
+
   // Copy outputs (done first to avoid signature invalidation)
   transaction.outs.forEach(function (txOut) {
     txb.addOutput(txOut.script, txOut.value)
@@ -681,9 +694,10 @@ TransactionBuilder.prototype.addInput = function (txHash, vout, sequence, prevOu
 
 TransactionBuilder.prototype.__addInputUnsafe = function (txHash, vout, options) {
   var input = {}
+  var vin;
 
   if (Transaction.isCoinbaseHash(txHash)) {
-    var vin = this.tx.addInput(txHash, vout, options.sequence, options.scriptSig)
+    vin = this.tx.addInput(txHash, vout, options.sequence, options.scriptSig)
     input = {
       pubKeys: [],
       signatures: [],
@@ -726,7 +740,7 @@ TransactionBuilder.prototype.__addInputUnsafe = function (txHash, vout, options)
     input.prevOutType = prevOutType || btemplates.classifyOutput(options.prevOutScript)
   }
 
-  var vin = this.tx.addInput(txHash, vout, options.sequence, options.scriptSig)
+  vin = this.tx.addInput(txHash, vout, options.sequence, options.scriptSig)
   this.inputs[vin] = input
   this.prevTxMap[prevTxOut] = vin
   return vin
@@ -862,7 +876,7 @@ TransactionBuilder.prototype.sign = function (vin, keyPair, redeemScript, hashTy
     signatureHash = this.tx.hashForGoldSignature(vin, input.signScript, witnessValue, hashType, input.witness)
     debug('Calculated BTG sighash (%s)', signatureHash.toString('hex'))
     console.log('Calculated BTG sighash (%s)', signatureHash.toString('hex'))
-  } else if (coins.isBitcoinCash(this.network)) {
+  } else if (coins.isBitcoinCash(this.network) || coins.isBitcoinSV(this.network)) {
     signatureHash = this.tx.hashForCashSignature(vin, input.signScript, witnessValue, hashType)
     debug('Calculated BCH sighash (%s)', signatureHash.toString('hex'))
     console.log('Calculated BCH sighash (%s)', signatureHash.toString('hex'))

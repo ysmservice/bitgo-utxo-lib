@@ -4,7 +4,7 @@ var coins = require('./coins')
 
 module.exports = {
   default: {
-    messagePrefix: '\x18Default Signed Message:\n',
+    messagePrefix: '\x15Verus signed data:\n',
     bech32: 'bc',
     bip32: {
       public: 0x0488b21e,
@@ -44,7 +44,7 @@ module.exports = {
     wif: 0xef, // https://github.com/dashpay/godashutil/blob/master/wif.go#L72
     coin: coins.DASH
   },
-  bch: {
+  bitcoincash: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -69,7 +69,32 @@ module.exports = {
     wif: 0xef,
     coin: coins.BCH
   },
-  zec: {
+  bitcoinsv: {
+    messagePrefix: '\x18Bitcoin Signed Message:\n',
+    bech32: 'bc',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x00,
+    scriptHash: 0x05,
+    wif: 0x80,
+    coin: coins.BSV,
+    forkId: 0x00
+  },
+  bitcoinsvTestnet: {
+    messagePrefix: '\x18Bitcoin Signed Message:\n',
+    bech32: 'tb',
+    bip32: {
+      public: 0x043587cf,
+      private: 0x04358394
+    },
+    pubKeyHash: 0x6f,
+    scriptHash: 0xc4,
+    wif: 0xef,
+    coin: coins.BSV
+  },
+  zcash: {
     messagePrefix: '\x18ZCash Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -85,7 +110,7 @@ module.exports = {
       1: 0x00,
       2: 0x00,
       3: 0x5ba81b19,
-      4: 0x76b809bb
+      4: 0xf5b9230b
     },
     coin: coins.ZEC,
     isZcash: true
@@ -104,13 +129,13 @@ module.exports = {
       1: 0x00,
       2: 0x00,
       3: 0x5ba81b19,
-      4: 0x76b809bb
+      4: 0xf5b9230b
     },
     coin: coins.ZEC,
     isZcash: true
   },
-  vrsc: {
-    messagePrefix: '\x18Verus Coin Signed Message:\n',
+  veruscoin: {
+    messagePrefix: '\x15Verus signed data:\n',
     bech32: 'bc',
     bip32: {
       public: 0x0488b21e,
@@ -128,7 +153,7 @@ module.exports = {
     coin: coins.VRSC,
     isZcash: true
   },
-  btg: {
+  bitcoingold: {
     messagePrefix: '\x18Bitcoin Gold Signed Message:\n',
     bech32: 'btg',
     bip32: {
@@ -141,7 +166,7 @@ module.exports = {
     coin: coins.BTG,
     forkId: 0x4F /* 79 */
   },
-  btc: {
+  bitcoin: {
     messagePrefix: '\x18Bitcoin Signed Message:\n',
     bech32: 'bc',
     bip32: {
@@ -165,8 +190,9 @@ module.exports = {
     wif: 0xef,
     coin: coins.BTC
   },
-  ltc: {
+  litecoin: {
     messagePrefix: '\x19Litecoin Signed Message:\n',
+    bech32: 'ltc',
     bip32: {
       public: 0x019da462,
       private: 0x019d9cfe
@@ -175,5 +201,62 @@ module.exports = {
     scriptHash: 0x32,
     wif: 0xb0,
     coin: coins.LTC
+  },
+  litecoinTest: {
+    messagePrefix: '\x19Litecoin Signed Message:\n',
+    bech32: 'tltc',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x6f,
+    scriptHash: 0x3a,
+    wif: 0xb0,
+    coin: coins.LTC
+  },
+  komodo: {
+    messagePrefix: '\x18Komodo Signed Message:\n',
+    bech32: 'bc',
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x3c,
+    scriptHash: 0x55,
+    wif: 0xBC,
+    consensusBranchId: {
+      1: 0x00,
+      2: 0x00,
+      3: 0x5ba81b19,
+      4: 0x76b809bb
+    },
+    coin: coins.KMD,
+    isZcash: true
+  },
+  doge: {
+    messagePrefix: '\x19Dogecoin Signed Message:\n',
+    bip44: 3,
+    bip32: {
+      public: 0x02facafd,
+      private: 0x02fac398
+    },
+    pubKeyHash: 0x1e,
+    scriptHash: 0x16,
+    wif: 0x9e,
+    coin: coins.DOGE,
+    dustThreshold: 0 // https://github.com/dogecoin/dogecoin/blob/v1.7.1/src/core.h#L155-L160
+  },
+  digibyte: {
+    messagePrefix: '\x19Digibyte Signed Message:\n',
+    bip44: 20,
+    bip32: {
+      public: 0x0488b21e,
+      private: 0x0488ade4
+    },
+    pubKeyHash: 0x1e,
+    scriptHash: 0x5,
+    wif: 0x80,
+    coin: coins.DGB,
+    dustThreshold: 1000
   }
 }
